@@ -11,11 +11,12 @@ namespace CryptoTraderService
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-             Host.CreateDefaultBuilder(args)
-                 .UseWindowsService()
-                 .ConfigureServices((hostContext, services) =>
-                 {
-                     services.AddHostedService<Worker>();
-                 });
+            Host.CreateDefaultBuilder(args)
+                .UseWindowsService()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<Worker>();
+                })
+                .UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
     }
 }
