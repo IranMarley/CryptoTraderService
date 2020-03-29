@@ -1,38 +1,41 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using CryptoTraderService.Worker.Entities;
+using CryptoTraderService.Worker.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using CryptoTraderService.Entities;
-using CryptoTraderService.Services;
 using RestSharp;
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace CryptoTraderService
+namespace CryptoTraderService.Worker
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
         private readonly ServiceConfigurations _serviceConfigurations;
+        private readonly IRequest _request;
 
-        public Worker(ILogger<Worker> logger,
-           IConfiguration configuration)
+        public Worker
+        (
+           ILogger<Worker> logger,
+           IConfiguration configuration,
+           IRequest request
+        )
         {
             _logger = logger;
-
-            _serviceConfigurations = new ServiceConfigurations();
-            new ConfigureFromConfigurationOptions<ServiceConfigurations>(
-                configuration.GetSection("ServiceConfigurations"))
-                    .Configure(_serviceConfigurations);
+            _serviceConfigurations = configuration
+                .GetSection("ServiceConfigurations").Get<ServiceConfigurations>();
+            _request = request;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker executed at: {time}", DateTimeOffset.Now);
+                _logger.LogInformation($"Worker executed at: {DateTimeOffset.Now}");
 
                 var host = _serviceConfigurations.Host;
                 var token = _serviceConfigurations.Token;
@@ -44,15 +47,16 @@ namespace CryptoTraderService
                 {
                     #region Orders
 
-                    var responseOrdersWaiting = new Request().SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
+                    var responseOrdersWaiting = _request
+                        .SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
+
                     var ordersWating = JsonConvert.DeserializeObject<UserOrder>(responseOrdersWaiting);
 
                     #endregion
 
-
                     #region Balance
 
-                    var responseBalance = new Request().SendRequest($"{host}/v3/wallets/balance", token, null, Method.GET);
+                    var responseBalance = _request.SendRequest($"{host}/v3/wallets/balance", token, null, Method.GET);
                     var balance = JsonConvert.DeserializeObject<Balance>(responseBalance);
 
                     #endregion
@@ -62,7 +66,9 @@ namespace CryptoTraderService
 
                     var amount = brl.available_amount - limitAmount;
 
-                    var responseEstimatedPrice = new Request().SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
+                    var responseEstimatedPrice = _request
+                        .SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
+
                     var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).data.price;
 
                     if (brl.available_amount > limitAmount && brl.locked_amount == 0 && estimatedPrice < minValue)
@@ -78,7 +84,7 @@ namespace CryptoTraderService
                         };
 
                         var json = JsonConvert.SerializeObject(entity);
-                        var response = new Request().SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
+                        var response = _request.SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
 
                         _logger.LogInformation(response);
                     }
@@ -95,7 +101,7 @@ namespace CryptoTraderService
                         };
 
                         var json = JsonConvert.SerializeObject(entity);
-                        var response = new Request().SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
+                        var response = _request.SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
 
                         _logger.LogInformation(response);
                     }

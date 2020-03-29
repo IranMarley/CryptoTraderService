@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace CryptoTraderService.Entities
+namespace CryptoTraderService.Worker.Entities
 {
     public class EstimatedPriceDetail
     {
@@ -12,6 +10,5 @@ namespace CryptoTraderService.Entities
         public string code { get; set; }
         public string message { get; set; }
         public EstimatedPriceDetail data { get; set; }
-
     }
 }

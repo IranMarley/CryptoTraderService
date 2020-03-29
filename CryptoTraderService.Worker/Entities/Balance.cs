@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace CryptoTraderService.Entities
+namespace CryptoTraderService.Worker.Entities
 {
     public class BalanceDetail
     {
@@ -10,12 +9,10 @@ namespace CryptoTraderService.Entities
         public float locked_amount { get; set; }
     }
 
-    public class Balance{
+    public class Balance
+    {
         public string code { get; set; }
         public string message { get; set; }
         public IEnumerable<BalanceDetail> data { get; set; }
-
     }
-
-
 }

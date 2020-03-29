@@ -1,4 +1,4 @@
-namespace CryptoTraderService.Entities
+namespace CryptoTraderService.Worker.Entities
 {
     public class Order
     {
@@ -9,5 +9,4 @@ namespace CryptoTraderService.Entities
         public float unit_price { get; set; }
         public float request_price { get; set; }
     }
-
 }
