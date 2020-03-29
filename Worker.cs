@@ -16,16 +16,19 @@ namespace CryptoTraderService
     {
         private readonly ILogger<Worker> _logger;
         private readonly ServiceConfigurations _serviceConfigurations;
+        private readonly IRequest _request;
 
         public Worker
         (
            ILogger<Worker> logger,
-           IConfiguration configuration
+           IConfiguration configuration,
+           IRequest request
         )
         {
             _logger = logger;
             _serviceConfigurations = configuration
                 .GetSection("ServiceConfigurations").Get<ServiceConfigurations>();
+            _request = request;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,7 +47,7 @@ namespace CryptoTraderService
                 {
                     #region Orders
 
-                    var responseOrdersWaiting = new Request()
+                    var responseOrdersWaiting = _request
                         .SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
 
                     var ordersWating = JsonConvert.DeserializeObject<UserOrder>(responseOrdersWaiting);
@@ -53,7 +56,7 @@ namespace CryptoTraderService
 
                     #region Balance
 
-                    var responseBalance = new Request().SendRequest($"{host}/v3/wallets/balance", token, null, Method.GET);
+                    var responseBalance = _request.SendRequest($"{host}/v3/wallets/balance", token, null, Method.GET);
                     var balance = JsonConvert.DeserializeObject<Balance>(responseBalance);
 
                     #endregion
@@ -63,7 +66,7 @@ namespace CryptoTraderService
 
                     var amount = brl.available_amount - limitAmount;
 
-                    var responseEstimatedPrice = new Request()
+                    var responseEstimatedPrice = _request
                         .SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
 
                     var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).data.price;
@@ -81,7 +84,7 @@ namespace CryptoTraderService
                         };
 
                         var json = JsonConvert.SerializeObject(entity);
-                        var response = new Request().SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
+                        var response = _request.SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
 
                         _logger.LogInformation(response);
                     }
@@ -98,7 +101,7 @@ namespace CryptoTraderService
                         };
 
                         var json = JsonConvert.SerializeObject(entity);
-                        var response = new Request().SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
+                        var response = _request.SendRequest($"{host}/v3/market/create_order", token, json, Method.POST);
 
                         _logger.LogInformation(response);
                     }
