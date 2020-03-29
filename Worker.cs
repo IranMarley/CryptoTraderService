@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using CryptoTraderService.Entities;
 using CryptoTraderService.Services;
@@ -18,21 +17,22 @@ namespace CryptoTraderService
         private readonly ILogger<Worker> _logger;
         private readonly ServiceConfigurations _serviceConfigurations;
 
-        public Worker(ILogger<Worker> logger,
-           IConfiguration configuration)
+        public Worker
+        (
+           ILogger<Worker> logger,
+           IConfiguration configuration
+        )
         {
             _logger = logger;
-
-            _serviceConfigurations = new ServiceConfigurations();
-            new ConfigureFromConfigurationOptions<ServiceConfigurations>(
-                configuration.GetSection("ServiceConfigurations"))
-                    .Configure(_serviceConfigurations);
+            _serviceConfigurations = configuration
+                .GetSection("ServiceConfigurations").Get<ServiceConfigurations>();
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker executed at: {time}", DateTimeOffset.Now);
+                _logger.LogInformation($"Worker executed at: {DateTimeOffset.Now}");
 
                 var host = _serviceConfigurations.Host;
                 var token = _serviceConfigurations.Token;
@@ -44,11 +44,12 @@ namespace CryptoTraderService
                 {
                     #region Orders
 
-                    var responseOrdersWaiting = new Request().SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
+                    var responseOrdersWaiting = new Request()
+                        .SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
+                    
                     var ordersWating = JsonConvert.DeserializeObject<UserOrder>(responseOrdersWaiting);
 
                     #endregion
-
 
                     #region Balance
 
@@ -62,7 +63,9 @@ namespace CryptoTraderService
 
                     var amount = brl.available_amount - limitAmount;
 
-                    var responseEstimatedPrice = new Request().SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
+                    var responseEstimatedPrice = new Request()
+                        .SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
+
                     var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).data.price;
 
                     if (brl.available_amount > limitAmount && brl.locked_amount == 0 && estimatedPrice < minValue)
