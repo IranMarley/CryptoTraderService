@@ -1,5 +1,5 @@
-using CryptoTraderService.Entities;
-using CryptoTraderService.Services;
+using CryptoTraderService.Worker.Entities;
+using CryptoTraderService.Worker.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CryptoTraderService
+namespace CryptoTraderService.Worker
 {
     public class Worker : BackgroundService
     {

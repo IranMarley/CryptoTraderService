@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace CryptoTraderService.Services
+namespace CryptoTraderService.Worker.Services
 {
     public interface IRequest
     {

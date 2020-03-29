@@ -1,4 +1,4 @@
-namespace CryptoTraderService.Entities
+namespace CryptoTraderService.Worker.Entities
 {
     public class Order
     {

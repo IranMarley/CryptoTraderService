@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>dotnet-CryptoTraderService-BBF53262-C808-4633-A6E7-2E760DA50324</UserSecretsId>
+    <UserSecretsId>dotnet-CryptoTraderService.Worker-BBF53262-C808-4633-A6E7-2E760DA50324</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

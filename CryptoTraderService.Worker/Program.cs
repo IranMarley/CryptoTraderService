@@ -1,9 +1,9 @@
-using CryptoTraderService.Services;
+using CryptoTraderService.Worker.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace CryptoTraderService
+namespace CryptoTraderService.Worker
 {
     public class Program
     {

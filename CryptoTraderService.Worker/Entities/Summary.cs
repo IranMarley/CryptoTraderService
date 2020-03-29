@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CryptoTraderService.Entities
+namespace CryptoTraderService.Worker.Entities
 {
     public class SummaryDetail
     {
