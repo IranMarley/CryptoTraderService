@@ -19,8 +19,6 @@ namespace CryptoTraderService.Entities
         public float total_price { get; set; }
         public float executed_amount { get; set; }
         public float remaining_price { get; set; }
-
-
     }
 
     public class UserOrder
@@ -29,6 +27,4 @@ namespace CryptoTraderService.Entities
         public IEnumerable<UserOrderDetail> orders { get; set; } = new List<UserOrderDetail>();
 
     }
-
-
 }

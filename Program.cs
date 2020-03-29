@@ -1,9 +1,11 @@
+using CryptoTraderService.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace CryptoTraderService
 {
-  public class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -16,6 +18,7 @@ namespace CryptoTraderService
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
+                    services.AddTransient<IRequest, Request>();
                 })
                 .UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
     }

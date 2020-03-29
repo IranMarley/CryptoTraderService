@@ -1,14 +1,14 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using CryptoTraderService.Entities;
 using CryptoTraderService.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RestSharp;
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CryptoTraderService
 {
@@ -46,7 +46,7 @@ namespace CryptoTraderService
 
                     var responseOrdersWaiting = new Request()
                         .SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
-                    
+
                     var ordersWating = JsonConvert.DeserializeObject<UserOrder>(responseOrdersWaiting);
 
                     #endregion
