@@ -1,3 +1,4 @@
+using CryptoTraderService.Worker.Interfaces;
 using RestSharp;
 
 namespace CryptoTraderService.Worker.Services
