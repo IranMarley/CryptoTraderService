@@ -42,13 +42,14 @@ namespace CryptoTraderService.Worker
                 var limitAmount = _serviceConfigurations.LimitAmount;
                 var minValue = _serviceConfigurations.MinValue;
                 var maxValue = _serviceConfigurations.MaxValue;
+                var subtype = _serviceConfigurations.Subtype;
 
                 try
                 {
                     #region Orders
 
                     var responseOrdersWaiting = _request
-                        .SendRequestMarket($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET);
+                        .SendRequest($"{host}/v2/market/user_orders/list?status=waiting&start_date=&end_date=&pair=BRLETH&type=buy&page_size=1&current_page=1", token, null, Method.GET, true);
 
                     var ordersWating = JsonConvert.DeserializeObject<UserOrder>(responseOrdersWaiting);
 
@@ -67,7 +68,7 @@ namespace CryptoTraderService.Worker
                     var amount = brl.Available_amount - limitAmount;
 
                     var responseEstimatedPrice = _request
-                        .SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
+                        .SendRequest($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET, true);
 
                     var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).Data.Price;
 
@@ -77,7 +78,7 @@ namespace CryptoTraderService.Worker
                         {
                             Pair = "BRLETH",
                             Type = "buy",
-                            Subtype = "limited",
+                            Subtype = subtype,
                             Amount = (float)(amount / estimatedPrice),
                             Unit_price = estimatedPrice + (float)0.0000001,
                             Request_price = amount
@@ -95,7 +96,7 @@ namespace CryptoTraderService.Worker
                         {
                             Pair = "BRLETH",
                             Type = "sell",
-                            Subtype = "limited",
+                            Subtype = subtype,
                             Amount = (float)(eth.Available_amount - 0.0000001),
                             Unit_price = estimatedPrice
                         };
@@ -105,7 +106,6 @@ namespace CryptoTraderService.Worker
 
                         _logger.LogInformation(response);
                     }
-
                 }
                 catch (Exception e)
                 {

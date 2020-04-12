@@ -4,7 +4,6 @@ namespace CryptoTraderService.Worker.Services
 {
     public interface IRequest
     {
-        string SendRequest(string host, string token, string json, Method method);
-        string SendRequestMarket(string host, string token, string json, Method method);
+        string SendRequest(string url, string token, string json, Method method, bool tokenTypeAuthorization = false);
     }
 }
