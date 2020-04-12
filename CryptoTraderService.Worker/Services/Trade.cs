@@ -49,8 +49,8 @@ namespace CryptoTraderService.Worker.Services
 
                 #endregion
 
-                var brl = balance.Data.First(f => f.Currency_code == "BRL");
-                var eth = balance.Data.First(f => f.Currency_code == "ETH");
+                var brl = balance.Data.First(f => f.Currency_code == _tradeSettings.Currency1);
+                var eth = balance.Data.First(f => f.Currency_code == _tradeSettings.Currency2);
 
                 var amount = brl.Available_amount - _tradeSettings.LimitAmount;
 
@@ -63,8 +63,8 @@ namespace CryptoTraderService.Worker.Services
                 {
                     var entity = new Order
                     {
-                        Pair = "BRLETH",
-                        Type = "buy",
+                        Pair = $"{_tradeSettings.Currency1}{_tradeSettings.Currency2}",
+                        Type = OrderType.Buy,
                         Subtype = _tradeSettings.Subtype,
                         Amount = (float)(amount / estimatedPrice),
                         Unit_price = estimatedPrice + (float)0.0000001,
@@ -81,8 +81,8 @@ namespace CryptoTraderService.Worker.Services
                 {
                     var entity = new Order
                     {
-                        Pair = "BRLETH",
-                        Type = "sell",
+                        Pair = $"{_tradeSettings.Currency1}{_tradeSettings.Currency2}",
+                        Type = OrderType.Sell,
                         Subtype = _tradeSettings.Subtype,
                         Amount = (float)(eth.Available_amount - 0.0000001),
                         Unit_price = estimatedPrice

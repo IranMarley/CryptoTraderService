@@ -8,6 +8,8 @@ namespace CryptoTraderService.Worker.Entities
         public float LimitAmount { get; set; }
         public float MinValue { get; set; }
         public float MaxValue { get; set; }
+        public string Currency1 { get; set; }
+        public string Currency2 { get; set; }
         public string Subtype { get; set; }
     }
 }
