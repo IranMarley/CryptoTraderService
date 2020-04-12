@@ -2,11 +2,11 @@ namespace CryptoTraderService.Worker.Entities
 {
     public class Order
     {
-        public string pair { get; set; }
-        public float amount { get; set; }
-        public string type { get; set; }
-        public string subtype { get; set; }
-        public float unit_price { get; set; }
-        public float request_price { get; set; }
+        public string Pair { get; set; }
+        public float Amount { get; set; }
+        public string Type { get; set; }
+        public string Subtype { get; set; }
+        public float Unit_price { get; set; }
+        public float Request_price { get; set; }
     }
 }

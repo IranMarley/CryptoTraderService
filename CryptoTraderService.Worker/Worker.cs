@@ -61,26 +61,26 @@ namespace CryptoTraderService.Worker
 
                     #endregion
 
-                    var brl = balance.data.First(f => f.currency_code == "BRL");
-                    var eth = balance.data.First(f => f.currency_code == "ETH");
+                    var brl = balance.Data.First(f => f.Currency_code == "BRL");
+                    var eth = balance.Data.First(f => f.Currency_code == "ETH");
 
-                    var amount = brl.available_amount - limitAmount;
+                    var amount = brl.Available_amount - limitAmount;
 
                     var responseEstimatedPrice = _request
                         .SendRequestMarket($"{host}/v2/market/estimated_price?amount=1&pair=BRLETH&type=buy", token, null, Method.GET);
 
-                    var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).data.price;
+                    var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).Data.Price;
 
-                    if (brl.available_amount > limitAmount && brl.locked_amount == 0 && estimatedPrice < minValue)
+                    if (brl.Available_amount > limitAmount && brl.Locked_amount == 0 && estimatedPrice < minValue)
                     {
                         var entity = new Order
                         {
-                            pair = "BRLETH",
-                            type = "buy",
-                            subtype = "limited",
-                            amount = (float)(amount / estimatedPrice),
-                            unit_price = estimatedPrice + (float)0.0000001,
-                            request_price = amount
+                            Pair = "BRLETH",
+                            Type = "buy",
+                            Subtype = "limited",
+                            Amount = (float)(amount / estimatedPrice),
+                            Unit_price = estimatedPrice + (float)0.0000001,
+                            Request_price = amount
                         };
 
                         var json = JsonConvert.SerializeObject(entity);
@@ -89,15 +89,15 @@ namespace CryptoTraderService.Worker
                         _logger.LogInformation(response);
                     }
 
-                    else if (eth.available_amount > 0 && eth.locked_amount == 0 && estimatedPrice > maxValue)
+                    else if (eth.Available_amount > 0 && eth.Locked_amount == 0 && estimatedPrice > maxValue)
                     {
                         var entity = new Order
                         {
-                            pair = "BRLETH",
-                            type = "sell",
-                            subtype = "limited",
-                            amount = (float)(eth.available_amount - 0.0000001),
-                            unit_price = estimatedPrice
+                            Pair = "BRLETH",
+                            Type = "sell",
+                            Subtype = "limited",
+                            Amount = (float)(eth.Available_amount - 0.0000001),
+                            Unit_price = estimatedPrice
                         };
 
                         var json = JsonConvert.SerializeObject(entity);

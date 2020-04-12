@@ -1,14 +1,9 @@
 namespace CryptoTraderService.Worker.Entities
 {
-    public class EstimatedPriceDetail
-    {
-        public float price { get; set; }
-    }
-
     public class EstimatedPrice
     {
-        public string code { get; set; }
-        public string message { get; set; }
-        public EstimatedPriceDetail data { get; set; }
+        public string Code { get; set; }
+        public string Message { get; set; }
+        public EstimatedPriceDetail Data { get; set; }
     }
 }
