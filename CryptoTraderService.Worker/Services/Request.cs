@@ -9,7 +9,7 @@ namespace CryptoTraderService.Worker.Services
         {
             var client = new RestClient(url);
             var request = new RestRequest(method);
-    
+
             if (tokenTypeAuthorization)
                 request.AddHeader("Authorization", $"ApiToken {token}");
             else

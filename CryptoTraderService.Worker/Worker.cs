@@ -1,13 +1,10 @@
 using CryptoTraderService.Worker.Entities;
 using CryptoTraderService.Worker.Interfaces;
-using CryptoTraderService.Worker.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using RestSharp;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

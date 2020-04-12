@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace CryptoTraderService.Worker.Entities
 {
     public class SummaryDetail
