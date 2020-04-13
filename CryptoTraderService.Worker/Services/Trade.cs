@@ -29,71 +29,6 @@ namespace CryptoTraderService.Worker.Services
                 .GetSection(typeof(TradeSettings).Name).Get<TradeSettings>();
         }
 
-        public Task Operation()
-        {
-            try
-            {
-                var pair = $"{_tradeSettings.Currency1}{_tradeSettings.Currency2}";
-
-                var ordersWating = CallEndpoint<UserOrder>(_tradeSettings.GetUserOrdersEndpoint, pair);
-
-                var balance = CallEndpoint<Balance>(_tradeSettings.GetBalanceEndpoint, Method.GET, null);
-
-                var estimatedPrice = CallEndpoint<EstimatedPrice>(_tradeSettings.GetPriceEndpoint, pair, 1);
-
-                var currence1 = balance.Data.First(f => f.Currency_code == _tradeSettings.Currency1);
-                var currence2 = balance.Data.First(f => f.Currency_code == _tradeSettings.Currency2);
-                var amount = currence1.Available_amount - _tradeSettings.LimitAmount;
-                var price = estimatedPrice.Data.Price;
-
-                if (currence1.Available_amount > _tradeSettings.LimitAmount
-                    && currence1.Locked_amount == 0
-                    && price < _tradeSettings.MinValue)
-                {
-                    var entity = new Order
-                    {
-                        Pair = pair,
-                        Type = OrderType.Buy,
-                        Subtype = _tradeSettings.Subtype,
-                        Amount = (float)(amount / price),
-                        Unit_price = price + 0.0000001f,
-                        Request_price = amount
-                    };
-
-                    var json = JsonConvert.SerializeObject(entity);
-                    var response = CallEndpoint<string>(_tradeSettings.GetOrderEndpoint, Method.POST, json);
-
-                    _logger.LogInformation(response);
-                }
-
-                else if (currence2.Available_amount > 0
-                    && currence2.Locked_amount == 0
-                    && price > _tradeSettings.MaxValue)
-                {
-                    var entity = new Order
-                    {
-                        Pair = pair,
-                        Type = OrderType.Sell,
-                        Subtype = _tradeSettings.Subtype,
-                        Amount = (float)(currence2.Available_amount - 0.0000001),
-                        Unit_price = price
-                    };
-
-                    var json = JsonConvert.SerializeObject(entity);
-                    var response = CallEndpoint<string>(_tradeSettings.GetOrderEndpoint, Method.POST, json);
-
-                    _logger.LogInformation(response);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return Task.FromException(e);
-            }
-
-            return Task.CompletedTask;
-        }
-
         public T CallEndpoint<T>(string endpoint, string pair) =>
             _request.SendRequest<T>($"{_tradeSettings.Host}/" +
                     $"{string.Format(endpoint, pair, OrderType.Buy, 1, 1)}",
@@ -107,5 +42,75 @@ namespace CryptoTraderService.Worker.Services
         public T CallEndpoint<T>(string endpoint, Method method, string json) =>
             _request.SendRequest<T>($"{_tradeSettings.Host}/{endpoint}",
                 _tradeSettings.Token, json, method);
+
+        public Task Operation()
+        {
+            try
+            {
+                var pair = $"{_tradeSettings.Currency1}{_tradeSettings.Currency2}";
+
+                var ordersWating = CallEndpoint<UserOrder>(_tradeSettings.GetUserOrdersEndpoint, pair);
+
+                var balance = CallEndpoint<Balance>(_tradeSettings.GetBalanceEndpoint, Method.GET, null);
+
+                var estimatedPrice = CallEndpoint<EstimatedPrice>(_tradeSettings.GetPriceEndpoint, pair, 1);
+
+                var currence1 = GetCurrenceData(balance, _tradeSettings.Currency1);
+                var currence2 = GetCurrenceData(balance, _tradeSettings.Currency2);
+                var amount = currence1.Available_amount - _tradeSettings.LimitAmount;
+                var price = estimatedPrice.Data.Price;
+
+                if (currence1.Available_amount > _tradeSettings.LimitAmount
+                    && currence1.Locked_amount == 0
+                    && price < _tradeSettings.MinValue)
+                {
+                    var newAmount = amount / price;
+                    var newUnitPrice = price + 0.0000001f;
+
+                    var entity = CreateOrder(pair, OrderType.Buy, newAmount,
+                        _tradeSettings.Subtype, newUnitPrice, amount);
+
+                    var response = CallEndpoint<string>(_tradeSettings.GetOrderEndpoint,
+                        Method.POST, JsonConvert.SerializeObject(entity));
+
+                    _logger.LogInformation(response);
+                }
+
+                else if (currence2.Available_amount > 0
+                    && currence2.Locked_amount == 0
+                    && price > _tradeSettings.MaxValue)
+                {
+                    var newAmount = currence2.Available_amount - 0.0000001f;
+
+                    var entity = CreateOrder(pair, OrderType.Sell,
+                        newAmount, _tradeSettings.Subtype, price, 0);
+
+                    var response = CallEndpoint<string>(_tradeSettings.GetOrderEndpoint,
+                        Method.POST, JsonConvert.SerializeObject(entity));
+
+                    _logger.LogInformation(response);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return Task.FromException(e);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private BalanceDetail GetCurrenceData(Balance balance, string currency) => 
+            balance.Data.First(f => f.Currency_code == currency);
+
+        private Order CreateOrder
+        (
+            string pair,
+            string type,
+            float amount,
+            string subType,
+            float unitPrice,
+            float requestPrice
+        ) => new Order().Create(pair, amount, type, subType, unitPrice, requestPrice);
     }
 }
