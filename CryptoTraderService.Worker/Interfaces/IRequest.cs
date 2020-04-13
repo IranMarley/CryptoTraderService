@@ -1,10 +1,11 @@
 ﻿using RestSharp;
+using System.Threading.Tasks;
 
-namespace CryptoTraderService.Worker.Services
+namespace CryptoTraderService.Worker.Interfaces
 {
     public interface IRequest
     {
-        string SendRequest(string host, string token, string json, Method method);
-        string SendRequestMarket(string host, string token, string json, Method method);
+        T SendRequest<T>(string url, string token, string json, Method method, bool tokenTypeAuthorization = false);
+        Task<T> SendRequestAsync<T>(string url, string token, string json, Method method, bool tokenTypeAuthorization = false);
     }
 }

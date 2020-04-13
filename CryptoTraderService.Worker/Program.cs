@@ -1,3 +1,4 @@
+using CryptoTraderService.Worker.Interfaces;
 using CryptoTraderService.Worker.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +20,7 @@ namespace CryptoTraderService.Worker
                 {
                     services.AddHostedService<Worker>();
                     services.AddTransient<IRequest, Request>();
+                    services.AddTransient<ITrade, Trade>();
                 })
                 .UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
     }
