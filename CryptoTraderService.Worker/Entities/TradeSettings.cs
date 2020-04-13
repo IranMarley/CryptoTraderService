@@ -11,5 +11,9 @@ namespace CryptoTraderService.Worker.Entities
         public string Currency1 { get; set; }
         public string Currency2 { get; set; }
         public string Subtype { get; set; }
+        public string GetBalanceEndpoint { get; set; }
+        public string GetOrderEndpoint { get; set; }
+        public string GetPriceEndpoint { get; set; }
+        public string GetUserOrdersEndpoint { get; set; }
     }
 }
