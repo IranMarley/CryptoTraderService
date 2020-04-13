@@ -11,13 +11,13 @@ namespace CryptoTraderService.Worker.Entities
 
         public Order Create
         (
-            string pair, 
-            float amount, 
-            string type, 
-            string subType, 
-            float unitPrice, 
+            string pair,
+            float amount,
+            string type,
+            string subType,
+            float unitPrice,
             float requestPrice
-        ) => 
+        ) =>
             new Order
             {
                 Pair = pair,

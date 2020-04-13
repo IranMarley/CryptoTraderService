@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CryptoTraderService.Worker.Entities
+﻿namespace CryptoTraderService.Worker.Entities
 {
     public static class OrderType
     {

@@ -100,7 +100,7 @@ namespace CryptoTraderService.Worker.Services
             return Task.CompletedTask;
         }
 
-        private BalanceDetail GetCurrenceData(Balance balance, string currency) => 
+        private BalanceDetail GetCurrenceData(Balance balance, string currency) =>
             balance.Data.First(f => f.Currency_code == currency);
 
         private Order CreateOrder
