@@ -37,20 +37,14 @@ namespace CryptoTraderService.Worker.Services
 
                 #region Orders
 
-                var responseOrdersWaiting = _request
-                    .SendRequest($"{_tradeSettings.Host}/" +
-                            $"{string.Format(_tradeSettings.GetUserOrdersEndpoint, pair, OrderType.Buy, 1, 1)}", 
-                        _tradeSettings.Token, null, Method.GET, true);
-
+                var responseOrdersWaiting = CallEndpoint(_tradeSettings.GetUserOrdersEndpoint, pair);
                 var ordersWating = JsonConvert.DeserializeObject<UserOrder>(responseOrdersWaiting);
 
                 #endregion
 
                 #region Balance
 
-                var responseBalance = _request
-                    .SendRequest($"{_tradeSettings.Host}/{_tradeSettings.GetBalanceEndpoint}", 
-                        _tradeSettings.Token, null, Method.GET);
+                string responseBalance = CallEndpoint(_tradeSettings.GetBalanceEndpoint, Method.GET, null);
 
                 var balance = JsonConvert.DeserializeObject<Balance>(responseBalance);
 
@@ -61,15 +55,13 @@ namespace CryptoTraderService.Worker.Services
 
                 var amount = currence1.Available_amount - _tradeSettings.LimitAmount;
 
-                var responseEstimatedPrice = _request
-                    .SendRequest($"{_tradeSettings.Host}/" +
-                            $"{string.Format(_tradeSettings.GetPriceEndpoint, 1, pair, OrderType.Buy)}",
-                        _tradeSettings.Token, null, Method.GET, true);
+                var responseEstimatedPrice = CallEndpoint(_tradeSettings.GetPriceEndpoint, pair, 1);
 
-                var estimatedPrice = JsonConvert.DeserializeObject<EstimatedPrice>(responseEstimatedPrice).Data.Price;
+                var estimatedPrice = JsonConvert
+                    .DeserializeObject<EstimatedPrice>(responseEstimatedPrice).Data.Price;
 
-                if (currence1.Available_amount > _tradeSettings.LimitAmount 
-                    && currence1.Locked_amount == 0 
+                if (currence1.Available_amount > _tradeSettings.LimitAmount
+                    && currence1.Locked_amount == 0
                     && estimatedPrice < _tradeSettings.MinValue)
                 {
                     var entity = new Order
@@ -84,15 +76,13 @@ namespace CryptoTraderService.Worker.Services
 
                     var json = JsonConvert.SerializeObject(entity);
 
-                    var response = _request
-                        .SendRequest($"{_tradeSettings.Host}/{_tradeSettings.GetOrderEndpoint}", 
-                            _tradeSettings.Token, json, Method.POST);
+                    var response = CallEndpoint(_tradeSettings.GetOrderEndpoint, Method.POST, json);
 
                     _logger.LogInformation(response);
                 }
 
-                else if (currence2.Available_amount > 0 
-                    && currence2.Locked_amount == 0 
+                else if (currence2.Available_amount > 0
+                    && currence2.Locked_amount == 0
                     && estimatedPrice > _tradeSettings.MaxValue)
                 {
                     var entity = new Order
@@ -105,10 +95,7 @@ namespace CryptoTraderService.Worker.Services
                     };
 
                     var json = JsonConvert.SerializeObject(entity);
-
-                    var response = _request
-                        .SendRequest($"{_tradeSettings.Host}/{_tradeSettings.GetOrderEndpoint}", 
-                            _tradeSettings.Token, json, Method.POST);
+                    var response = CallEndpoint(_tradeSettings.GetOrderEndpoint, Method.POST, json);
 
                     _logger.LogInformation(response);
                 }
@@ -121,5 +108,19 @@ namespace CryptoTraderService.Worker.Services
 
             return Task.CompletedTask;
         }
+
+        public string CallEndpoint(string endpoint, string pair) =>
+            _request.SendRequest($"{_tradeSettings.Host}/" +
+                    $"{string.Format(endpoint, pair, OrderType.Buy, 1, 1)}",
+                _tradeSettings.Token, null, Method.GET, true);
+
+        public string CallEndpoint(string endpoint, string pair, int amount) =>
+            _request.SendRequest($"{_tradeSettings.Host}/" +
+                    $"{string.Format(endpoint, amount, pair, OrderType.Buy)}",
+                _tradeSettings.Token, null, Method.GET, true);
+
+        public string CallEndpoint(string endpoint, Method method, string json) => 
+            _request.SendRequest($"{_tradeSettings.Host}/{endpoint}", 
+                _tradeSettings.Token, json, method);
     }
 }
