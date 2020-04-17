@@ -1,9 +1,16 @@
+using Newtonsoft.Json;
+
 namespace CryptoTraderService.Worker.Entities
 {
     public class BalanceDetail
     {
-        public float Available_amount { get; set; }
-        public string Currency_code { get; set; }
-        public float Locked_amount { get; set; }
+        [JsonProperty(PropertyName = "available_amount")]
+        public float AvailableAmount { get; set; }
+
+        [JsonProperty(PropertyName = "currency_code")]
+        public string CurrencyCode { get; set; }
+
+        [JsonProperty(PropertyName = "locked_amount")]
+        public float LockedAmount { get; set; }
     }
 }

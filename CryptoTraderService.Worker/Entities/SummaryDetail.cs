@@ -1,12 +1,25 @@
+using Newtonsoft.Json;
+
 namespace CryptoTraderService.Worker.Entities
 {
     public class SummaryDetail
     {
-        public float Unit_price_24h { get; set; }
-        public float Volume_24h { get; set; }
-        public float Last_transaction_unit_price { get; set; }
+        [JsonProperty(PropertyName = "unit_price_24h")]
+        public float UnitPrice24h { get; set; }
+
+        [JsonProperty(PropertyName = "volume_24h")]
+        public float Volume24h { get; set; }
+
+        [JsonProperty(PropertyName = "last_transaction_unit_price")]
+        public float LastTransactionUnitPrice { get; set; }
+
+        [JsonProperty(PropertyName = "pair")]
         public string Pair { get; set; }
-        public float Max_value { get; set; }
-        public float Min_value { get; set; }
+
+        [JsonProperty(PropertyName = "max_value")]
+        public float MaxValue { get; set; }
+
+        [JsonProperty(PropertyName = "min_value")]
+        public float MinValue { get; set; }
     }
 }

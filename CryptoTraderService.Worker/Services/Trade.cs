@@ -57,11 +57,11 @@ namespace CryptoTraderService.Worker.Services
 
                 var currence1 = GetCurrenceData(balance, _tradeSettings.Currency1);
                 var currence2 = GetCurrenceData(balance, _tradeSettings.Currency2);
-                var amount = currence1.Available_amount - _tradeSettings.LimitAmount;
+                var amount = currence1.AvailableAmount - _tradeSettings.LimitAmount;
                 var price = estimatedPrice.Data.Price;
 
-                if (currence1.Available_amount > _tradeSettings.LimitAmount
-                    && currence1.Locked_amount == 0
+                if (currence1.AvailableAmount > _tradeSettings.LimitAmount
+                    && currence1.LockedAmount == 0
                     && price < _tradeSettings.MinValue)
                 {
                     var newAmount = amount / price;
@@ -75,11 +75,11 @@ namespace CryptoTraderService.Worker.Services
 
                     _logger.LogInformation(response.ToString());
                 }
-                else if (currence2.Available_amount > 0
-                    && currence2.Locked_amount == 0
+                else if (currence2.AvailableAmount > 0
+                    && currence2.LockedAmount == 0
                     && price > _tradeSettings.MaxValue)
                 {
-                    var newAmount = currence2.Available_amount - 0.0000001f;
+                    var newAmount = currence2.AvailableAmount - 0.0000001f;
 
                     var entity = CreateOrder(pair, OrderType.Sell,
                         newAmount, _tradeSettings.Subtype, price, 0);
@@ -100,7 +100,7 @@ namespace CryptoTraderService.Worker.Services
         }
 
         private BalanceDetail GetCurrenceData(Balance balance, string currency) =>
-            balance.Data.First(f => f.Currency_code == currency);
+            balance.Data.First(f => f.CurrencyCode == currency);
 
         private Order CreateOrder
         (
