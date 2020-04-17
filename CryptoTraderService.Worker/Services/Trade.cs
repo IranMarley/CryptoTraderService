@@ -70,12 +70,11 @@ namespace CryptoTraderService.Worker.Services
                     var entity = CreateOrder(pair, OrderType.Buy, newAmount,
                         _tradeSettings.Subtype, newUnitPrice, amount);
 
-                    var response = CallEndpoint<string>(_tradeSettings.GetOrderEndpoint,
-                        Method.POST, JsonConvert.SerializeObject(entity));
+                    var response = CallEndpoint<object>(_tradeSettings.GetOrderEndpoint,
+                        Method.POST, JsonConvert.SerializeObject(entity, Formatting.Indented));
 
-                    _logger.LogInformation(response);
+                    _logger.LogInformation(response.ToString());
                 }
-
                 else if (currence2.Available_amount > 0
                     && currence2.Locked_amount == 0
                     && price > _tradeSettings.MaxValue)
@@ -85,10 +84,10 @@ namespace CryptoTraderService.Worker.Services
                     var entity = CreateOrder(pair, OrderType.Sell,
                         newAmount, _tradeSettings.Subtype, price, 0);
 
-                    var response = CallEndpoint<string>(_tradeSettings.GetOrderEndpoint,
-                        Method.POST, JsonConvert.SerializeObject(entity));
+                    var response = CallEndpoint<object>(_tradeSettings.GetOrderEndpoint,
+                        Method.POST, JsonConvert.SerializeObject(entity, Formatting.Indented));
 
-                    _logger.LogInformation(response);
+                    _logger.LogInformation(response.ToString());
                 }
             }
             catch (Exception e)
