@@ -71,7 +71,7 @@ namespace CryptoTraderService.Worker.Services
                         _tradeSettings.Subtype, newUnitPrice, amount);
 
                     var response = CallEndpoint<object>(_tradeSettings.GetOrderEndpoint,
-                        Method.POST, JsonConvert.SerializeObject(entity, Formatting.Indented));
+                        Method.POST, JsonConvert.SerializeObject(entity));
 
                     _logger.LogInformation(response.ToString());
                 }
@@ -85,7 +85,7 @@ namespace CryptoTraderService.Worker.Services
                         newAmount, _tradeSettings.Subtype, price, 0);
 
                     var response = CallEndpoint<object>(_tradeSettings.GetOrderEndpoint,
-                        Method.POST, JsonConvert.SerializeObject(entity, Formatting.Indented));
+                        Method.POST, JsonConvert.SerializeObject(entity));
 
                     _logger.LogInformation(response.ToString());
                 }

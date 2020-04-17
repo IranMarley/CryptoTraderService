@@ -1,13 +1,26 @@
+using Newtonsoft.Json;
+
 namespace CryptoTraderService.Worker.Entities
 {
     public class Order
     {
+        [JsonProperty(PropertyName = "pair")]
         public string Pair { get; set; }
+
+        [JsonProperty(PropertyName = "amount")]
         public float Amount { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+
+        [JsonProperty(PropertyName = "subtype")]
         public string Subtype { get; set; }
-        public float Unit_price { get; set; }
-        public float Request_price { get; set; }
+
+        [JsonProperty(PropertyName = "unit_price")]
+        public float UnitPrice { get; set; }
+
+        [JsonProperty(PropertyName = "request_price")]
+        public float RequestPrice { get; set; }
 
         public Order Create
         (
@@ -24,8 +37,8 @@ namespace CryptoTraderService.Worker.Entities
                 Type = type,
                 Subtype = subType,
                 Amount = amount,
-                Unit_price = unitPrice,
-                Request_price = requestPrice
+                UnitPrice = unitPrice,
+                RequestPrice = requestPrice
             };
     }
 }
