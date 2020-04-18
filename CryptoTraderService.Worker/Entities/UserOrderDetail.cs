@@ -5,39 +5,46 @@ namespace CryptoTraderService.Worker.Entities
 {
     public class UserOrderDetail
     {
+        [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
+
+        [JsonProperty(PropertyName = "code")]
         public string Code { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+
+        [JsonProperty(PropertyName = "subtype")]
         public string Subtype { get; set; }
 
-        [JsonProperty(PropertyName = "Requested_amount")]
+        [JsonProperty(PropertyName = "requested_amount")]
         public float RequestedAmount { get; set; }
 
-        [JsonProperty(PropertyName = "Remaining_amount")]
+        [JsonProperty(PropertyName = "remaining_amount")]
         public float RemainingAmount { get; set; }
 
-        [JsonProperty(PropertyName = "Unit_price")]
+        [JsonProperty(PropertyName = "unit_price")]
         public float UnitPrice { get; set; }
 
-        [JsonProperty(PropertyName = "Status")]
+        [JsonProperty(PropertyName = "status")]
         public string Status { get; set; }
 
-        [JsonProperty(PropertyName = "Create_date")]
+        [JsonProperty(PropertyName = "create_date")]
         public DateTime CreateDate { get; set; }
 
-        [JsonProperty(PropertyName = "Update_date")]
+        [JsonProperty(PropertyName = "update_date")]
         public DateTime UpdateDate { get; set; }
 
-        [JsonProperty(PropertyName = "Pair")]
+        [JsonProperty(PropertyName = "pair")]
         public string Pair { get; set; }
 
-        [JsonProperty(PropertyName = "Total_price")]
+        [JsonProperty(PropertyName = "total_price")]
         public float TotalPrice { get; set; }
 
-        [JsonProperty(PropertyName = "Executed_amount")]
+        [JsonProperty(PropertyName = "executed_amount")]
         public float ExecutedAmount { get; set; }
 
-        [JsonProperty(PropertyName = "Remaining_price")]
+        [JsonProperty(PropertyName = "remaining_price")]
         public float RemainingPrice { get; set; }
     }
 }
