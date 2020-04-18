@@ -8,6 +8,6 @@ namespace CryptoTraderService.Worker.Interfaces
         T CallEndpoint<T>(string endpoint, string pair);
         T CallEndpoint<T>(string endpoint, string pair, int amount);
         T CallEndpoint<T>(string endpoint, Method method, string json);
-        Task Operation();
+        Task Execute();
     }
 }

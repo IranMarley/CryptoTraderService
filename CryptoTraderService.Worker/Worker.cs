@@ -35,7 +35,7 @@ namespace CryptoTraderService.Worker
             {
                 _logger.LogInformation($"Worker execution started at: {DateTimeOffset.Now}");
 
-                await _trade.Operation();
+                await _trade.Execute();
 
                 _logger.LogInformation($"Worker execution finished at: {DateTimeOffset.Now}");
 

@@ -43,7 +43,7 @@ namespace CryptoTraderService.Worker.Services
             _request.SendRequest<T>($"{_tradeSettings.Host}/{endpoint}",
                 _tradeSettings.Token, json, method);
 
-        public Task Operation()
+        public Task Execute()
         {
             try
             {
