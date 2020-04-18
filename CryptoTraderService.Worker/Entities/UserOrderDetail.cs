@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 
 namespace CryptoTraderService.Worker.Entities
@@ -8,15 +9,35 @@ namespace CryptoTraderService.Worker.Entities
         public string Code { get; set; }
         public string Type { get; set; }
         public string Subtype { get; set; }
-        public float Requested_amount { get; set; }
-        public float Remaining_amount { get; set; }
-        public float Unit_price { get; set; }
+
+        [JsonProperty(PropertyName = "Requested_amount")]
+        public float RequestedAmount { get; set; }
+
+        [JsonProperty(PropertyName = "Remaining_amount")]
+        public float RemainingAmount { get; set; }
+
+        [JsonProperty(PropertyName = "Unit_price")]
+        public float UnitPrice { get; set; }
+
+        [JsonProperty(PropertyName = "Status")]
         public string Status { get; set; }
-        public DateTime Create_date { get; set; }
-        public DateTime Update_date { get; set; }
+
+        [JsonProperty(PropertyName = "Create_date")]
+        public DateTime CreateDate { get; set; }
+
+        [JsonProperty(PropertyName = "Update_date")]
+        public DateTime UpdateDate { get; set; }
+
+        [JsonProperty(PropertyName = "Pair")]
         public string Pair { get; set; }
-        public float Total_price { get; set; }
-        public float Executed_amount { get; set; }
-        public float Remaining_price { get; set; }
+
+        [JsonProperty(PropertyName = "Total_price")]
+        public float TotalPrice { get; set; }
+
+        [JsonProperty(PropertyName = "Executed_amount")]
+        public float ExecutedAmount { get; set; }
+
+        [JsonProperty(PropertyName = "Remaining_price")]
+        public float RemainingPrice { get; set; }
     }
 }
